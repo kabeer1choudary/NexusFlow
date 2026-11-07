@@ -13,5 +13,4 @@ NexusFlow is an open-source, API-first data center infrastructure management (DC
                      ▼
 
         [         NexusFlow          ]
-
 [ API Engine/CLI ] ◄─► [ Drift Engine  ] ◄─► [ Dynamic Querying ] 
