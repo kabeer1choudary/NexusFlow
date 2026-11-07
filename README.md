@@ -1,2 +1,2 @@
 # NexusFlow
-Open Source Data Center Inventory Management System
+Open Source Data Center Infrastructure Inventory Management System
