@@ -11,10 +11,7 @@ NexusFlow is an open-source, API-first data center infrastructure management (DC
               (SCM Webhooks)
                      │
                      ▼
-┌────────────────────────────────────────────────────┐
-│                    NexusFlow                       │
-│ ┌─────────────┐   ┌───────────────┐   ┌──────────┐ │
-│ │  API-First  │   │ Drift Engine  │   │ Dynamic  │ │
-│ │ Engine/CLI  │◄─►│ (Git vs Real) │◄─►| Querying │ │
-│ └─────────────┘   └───────────────┘   └──────────┘ │
-└────────────────────────────────────────────────────┘
+
+        [         NexusFlow          ]
+
+[ API Engine/CLI ] ◄─► [ Drift Engine  ] ◄─► [ Dynamic Querying ] 
