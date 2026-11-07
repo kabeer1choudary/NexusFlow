@@ -21,7 +21,6 @@ NexusFlow is an open-source, API-first data center infrastructure management (DC
 
 
 ## Core Key Features
-
     ### API-First & CLI Driven
 
         - Built ground-up with REST/OpenAPI endpoints for programmatic control.
@@ -58,7 +57,7 @@ NexusFlow is an open-source, API-first data center infrastructure management (DC
 
         - Retains historically logged sources for complete forensic tracing across the hardware lifecycle.
 
-    ## Structured Data Model
+    ### Structured Data Model
 
         - Predictable, predictable JSON representation: resource > attributes > relationships > tags > history.
 
