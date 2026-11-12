@@ -57,3 +57,67 @@
 
 ### Seamless Import / Export Pipeline
 * **Bulk Data Operations:** Native bulk operations supporting JSON, YAML, and CSV files for easily onboarding, updating, or purging asset records.
+
+---
+
+## Getting Started
+
+### Docker Compose (Postgres + API)
+```bash
+cp .env.example .env          # set NXFLOW_API_KEY
+make up                       # builds API, starts Postgres, runs migrations
+curl http://localhost:8000/healthz
+```
+
+### Local development
+```bash
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev]"
+export NXFLOW_DATABASE_URL=postgresql+asyncpg://nxflow:nxflow@localhost:5432/nxflow
+python -m alembic -c api/alembic.ini upgrade head
+python scripts/seed.py 1000
+uvicorn nxflow.main:app --reload
+```
+
+### API examples
+```bash
+API=http://localhost:8000; KEY=change-me
+
+curl -X POST $API/api/v1/resources -H "x-api-key: $KEY" -H 'content-type: application/json' -d '{
+  "type":"server","name":"web-01","status":"active","location":"dc1/row3/rack7",
+  "tags":["prod","web"],"attributes":{"cpu":32,"power":450},
+  "metadata":{"warranty":"2027-01-01","asset_id":"A-1042"},
+  "origin":{"source":"manual","ref":null}}'
+
+curl "$API/api/v1/resources?q=status:active%20tag:prod" -H "x-api-key: $KEY"
+curl "$API/api/v1/resources/<id>/history" -H "x-api-key: $KEY"
+```
+
+Every request except `/healthz` requires `X-API-Key` when `NXFLOW_API_KEY` is set.
+PATCH bodies must include the current `version`; a stale version returns `409`.
+
+### Search syntax (MVP)
+Whitespace-separated `key:value` predicates, ANDed:
+`status:active`, `type:server`, `tag:prod`, `location:dc1/row3*` (prefix),
+`attr.power:450`, `meta.asset_id:A-1042`, and free text for `name` matches.
+
+### CLI
+```bash
+cd cli && cargo build --release
+target/release/nxflow config init --url http://localhost:8000 --api-key change-me
+nxflow resource create --type server --name web-01 --status active --tag prod --attr power=450
+nxflow resource list --q "status:active tag:prod"
+nxflow history <resource-id>
+nxflow rel add --source <id> --target <id> --type racks
+nxflow export > inventory.json
+```
+
+### Tests
+```bash
+make test    # pytest; uses NXFLOW_TEST_DATABASE_URL or testcontainers Postgres
+cd cli && cargo test
+```
+
+### Deferred to milestone 2
+Drift engine (`/diff`), SCM webhooks (`/webhooks/scm`), multi-source ingestion workers,
+YAML/CSV import-export, RBAC roles, and relationship graph traversal.

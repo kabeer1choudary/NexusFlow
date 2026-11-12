@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: nxflow
+      POSTGRES_PASSWORD: nxflow
+      POSTGRES_DB: nxflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - nxflow_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nxflow -d nxflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ..
+      dockerfile: deploy/api.Dockerfile
+    environment:
+      NXFLOW_DATABASE_URL: postgresql+asyncpg://nxflow:nxflow@db:5432/nxflow
+      NXFLOW_API_KEY: change-me
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    command:
+      - sh
+      - -c
+      - python -m alembic -c api/alembic.ini upgrade head && uvicorn nxflow.main:app --host 0.0.0.0 --port 8000
+
+volumes:
+  nxflow_pgdata:
