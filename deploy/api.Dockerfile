@@ -1,13 +1,22 @@
-FROM python:3.12-slim
+FROM python:3.12.16-slim-bookworm@sha256:935c3c5b12357a7e10caa9c1e6ca5692344d97cf229832ef584be2cec9fc03df
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
 
 WORKDIR /app
+
+COPY requirements.lock requirements-build.lock ./
+RUN pip install --require-hashes -r requirements.lock \
+ && pip install --require-hashes -r requirements-build.lock
 
 COPY pyproject.toml ./
 COPY api ./api
 
-RUN pip install --no-cache-dir .
+RUN pip install --no-deps --no-build-isolation .
 
 EXPOSE 8000
+
+RUN useradd --system --uid 10001 nxflow
+USER nxflow
