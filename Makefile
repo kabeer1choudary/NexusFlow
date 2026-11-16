@@ -1,6 +1,7 @@
 VENV ?= .venv
 PY := $(VENV)/bin/python
 LOCK ?= requirements-dev.lock
+COMPOSE ?= docker compose
 
 .PHONY: up down migrate seed test lint fmt install locks lock-cli
 
@@ -21,10 +22,10 @@ lock-cli:
 	cd cli && cargo generate-lockfile
 
 up:
-	docker compose -f deploy/docker-compose.yml up -d --build
+	$(COMPOSE) -f deploy/docker-compose.yml up -d --build
 
 down:
-	docker compose -f deploy/docker-compose.yml down
+	$(COMPOSE) -f deploy/docker-compose.yml down
 
 migrate:
 	$(PY) -m alembic -c api/alembic.ini upgrade head
