@@ -121,3 +121,15 @@ cd cli && cargo test
 ### Deferred to milestone 2
 Drift engine (`/diff`), SCM webhooks (`/webhooks/scm`), multi-source ingestion workers,
 YAML/CSV import-export, RBAC roles, and relationship graph traversal.
+
+---
+
+## References
+
+For deeper details, check out the manuals in [`docs/manual`](docs/manual):
+
+* [`build-guide.md`](docs/manual/build-guide.md) — building the project.
+* [`build-guide-alpine.md`](docs/manual/build-guide-alpine.md) — building on Alpine Linux.
+* [`test-guide.md`](docs/manual/test-guide.md) — running tests.
+
+These cover how to build, test, and understand the project end to end.
