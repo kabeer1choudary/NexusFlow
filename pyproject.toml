@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.uv]
+# Locks are generated for the 3.12 interpreter used in CI and the container image:
+#   uv pip compile pyproject.toml --python-version 3.12 --universal --generate-hashes -o requirements.lock
+#   uv pip compile pyproject.toml --extra dev --python-version 3.12 --universal --generate-hashes -o requirements-dev.lock
+
+[project]
+name = "nxflow"
+version = "0.1.0"
+description = "NexusFlow - open source data center infrastructure inventory management"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.163,<0.164",
+    "uvicorn[standard]>=0.54,<0.55",
+    "sqlalchemy[asyncio]>=2.1,<2.2",
+    "asyncpg>=0.32,<0.33",
+    "pydantic-settings>=2.16,<2.17",
+    "alembic>=1.20,<1.21",
+    "pyyaml>=6.0,<7",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.2,<10",
+    "pytest-asyncio>=1.5,<2",
+    "httpx>=0.28,<0.29",
+    "ruff>=0.17,<0.18",
+    "mypy>=2.4,<3",
+    "testcontainers>=4.15,<5",
+]
+
+[tool.setuptools.packages.find]
+where = ["api/src"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+pythonpath = ["api/src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["UP046"]
+
+[tool.ruff.lint.per-file-ignores]
+"api/src/nxflow/routers/*.py" = ["B008"]
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+warn_unused_ignores = false
